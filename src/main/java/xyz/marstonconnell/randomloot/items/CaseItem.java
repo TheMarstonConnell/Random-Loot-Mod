@@ -128,6 +128,7 @@ public class CaseItem extends Item {
 			is.assignType(i, is.variant);
 			
 			switch (level) {
+			
 			case 0:
 				RLUtils.assignDamage(i, 4.5, 8);
 				RLUtils.assignSpeed(i, 0.2, 0.7);
