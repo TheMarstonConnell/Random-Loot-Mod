@@ -29,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import xyz.marstonconnell.randomloot.RandomLoot;
+import xyz.marstonconnell.randomloot.util.Config;
 import xyz.marstonconnell.randomloot.util.RLUtils;
 import xyz.marstonconnell.randomloot.util.ToolMaterialList;
 
@@ -53,6 +54,58 @@ public class AxeItem extends ItemAxe implements RandomTool {
 			}
 
 		});
+	}
+	
+	@Override
+	public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+
+		NBTTagCompound nbt;
+		if (stack.hasTag()) {
+			nbt = stack.getTag();
+		} else {
+			nbt = new NBTTagCompound();
+		}
+
+		int xp = nbt.getInt("Xp");
+		int lvlXp = nbt.getInt("lvlXp");
+
+		if (nbt.hasKey("Xp")) {
+			nbt.setInt("Xp", nbt.getInt("Xp") + 1);
+		} else {
+			nbt.setInt("Xp", 1);
+		}
+		
+		if (xp >= lvlXp) {
+			upgrade(stack);
+			
+		}
+		
+		int t1 = nbt.getInt("T1");
+		int t2 = nbt.getInt("T2");
+		int t3 = nbt.getInt("T3");
+
+		if (t1 == 1 || t2 == 1 || t3 == 1) {
+			target.addPotionEffect(new PotionEffect(MobEffects.POISON, 5 * 20, 0));
+		}
+		if (t1 == 2 || t2 == 2 || t3 == 2) {
+			target.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 5 * 20, 1));
+		}
+		if (t1 == 3 || t2 == 3 || t3 == 3) {
+			target.addPotionEffect(new PotionEffect(MobEffects.WITHER, 5 * 20, 0));
+		}
+		if (t1 == 4 || t2 == 4 || t3 == 4) {
+			target.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 8 * 20, 0));
+		}
+		if (t1 == 5 || t2 == 5 || t3 == 5) {
+			target.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 10 * 20, 0));
+		}
+		if (t1 == 6 || t2 == 6 || t3 == 6) {
+			target.addPotionEffect(new PotionEffect(MobEffects.LEVITATION, 10 * 20, 0));
+		}
+		
+		stack.setTag(nbt);
+		setLore(stack);
+		return super.hitEntity(stack, target, attacker);
 	}
 
 	@Override
@@ -133,7 +186,7 @@ public class AxeItem extends ItemAxe implements RandomTool {
 
 		}
 
-		if ((t1 == 9 || t2 == 9 || t3 == 9)) {
+		if ((t1 == 9 || t2 == 9 || t3 == 9)&& Config.COMMON.allowUnbreakable.get()) {
 			nbt.setBoolean("Unbreakable", true);
 		}
 
@@ -180,34 +233,37 @@ public class AxeItem extends ItemAxe implements RandomTool {
 
 		DecimalFormat f = new DecimalFormat("##.00");
 		lore.add(new NBTTagString(TextFormatting.GRAY + "Mining Speed: " + f.format(RLUtils.getRLMDigSpeed(stack))));
+		lore.add(new NBTTagString(TextFormatting.GRAY + "Attack Damage: " + f.format(RLUtils.getRLMDamage(stack))));
+		lore.add(new NBTTagString(TextFormatting.GRAY + "Attack Speed: "
+				+ f.format(4 + RLUtils.getRLMSpeed(stack) - 3)));
 		lore.add(new NBTTagString(""));
 		int t1 = compound.getInt("T1");
 		int t2 = compound.getInt("T2");
 		int t3 = compound.getInt("T3");
 
 		if (t1 == 1 || t2 == 1 || t3 == 1) {
-			// lore.appendTag(new NBTTagString(TextFormatting.DARK_GREEN +
-			// "Poisonous"));
+			 lore.add(new NBTTagString(TextFormatting.DARK_GREEN +
+			 "Poisonous"));
 		}
 		if (t1 == 2 || t2 == 2 || t3 == 2) {
-			// lore.appendTag(new NBTTagString(TextFormatting.DARK_GRAY +
-			// "Weakening"));
+			 lore.add(new NBTTagString(TextFormatting.DARK_GRAY +
+			 "Weakening"));
 		}
 		if (t1 == 3 || t2 == 3 || t3 == 3) {
-			// lore.appendTag(new NBTTagString(TextFormatting.DARK_GRAY +
-			// "Withering"));
+			 lore.add(new NBTTagString(TextFormatting.DARK_GRAY +
+			 "Withering"));
 		}
 		if (t1 == 4 || t2 == 4 || t3 == 4) {
-			// lore.appendTag(new NBTTagString(TextFormatting.DARK_GRAY +
-			// "Blinding"));
+			 lore.add(new NBTTagString(TextFormatting.DARK_GRAY +
+			 "Blinding"));
 		}
 		if (t1 == 5 || t2 == 5 || t3 == 5) {
-			// lore.appendTag(new NBTTagString(TextFormatting.DARK_RED +
-			// "Starving"));
+			 lore.add(new NBTTagString(TextFormatting.DARK_RED +
+			 "Starving"));
 		}
 		if (t1 == 6 || t2 == 6 || t3 == 6) {
-			// lore.appendTag(new NBTTagString(TextFormatting.GOLD +
-			// "Levitating"));
+			 lore.add(new NBTTagString(TextFormatting.GOLD +
+			 "Levitating"));
 		}
 		if (t1 == 7 || t2 == 7 || t3 == 7) {
 			lore.add(new NBTTagString(TextFormatting.DARK_GREEN + "Filling"));
@@ -215,7 +271,7 @@ public class AxeItem extends ItemAxe implements RandomTool {
 		if (t1 == 8 || t2 == 8 || t3 == 8) {
 //			lore.add(new NBTTagString(TextFormatting.DARK_RED + "Auto-Smelt"));
 		}
-		if ((t1 == 9 || t2 == 9 || t3 == 9)) {
+		if ((t1 == 9 || t2 == 9 || t3 == 9)&& Config.COMMON.allowUnbreakable.get()) {
 			lore.add(new NBTTagString(TextFormatting.GRAY + "Fortified"));
 		}
 		if (t1 == 10 || t2 == 10 || t3 == 10) {

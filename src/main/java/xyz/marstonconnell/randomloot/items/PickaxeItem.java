@@ -29,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import xyz.marstonconnell.randomloot.RandomLoot;
+import xyz.marstonconnell.randomloot.util.Config;
 import xyz.marstonconnell.randomloot.util.RLUtils;
 import xyz.marstonconnell.randomloot.util.ToolMaterialList;
 
@@ -109,6 +110,9 @@ public class PickaxeItem extends ItemPickaxe implements RandomTool {
 
 		DecimalFormat f = new DecimalFormat("##.00");
 		lore.add(new NBTTagString(TextFormatting.GRAY + "Mining Speed: " + f.format(RLUtils.getRLMDigSpeed(stack))));
+		lore.add(new NBTTagString(TextFormatting.GRAY + "Attack Damage: " + f.format(RLUtils.getRLMDamage(stack))));
+		lore.add(new NBTTagString(TextFormatting.GRAY + "Attack Speed: "
+				+ f.format(4 + RLUtils.getRLMSpeed(stack) - 3)));
 		lore.add(new NBTTagString(""));
 		int t1 = compound.getInt("T1");
 		int t2 = compound.getInt("T2");
@@ -144,7 +148,7 @@ public class PickaxeItem extends ItemPickaxe implements RandomTool {
 		if (t1 == 8 || t2 == 8 || t3 == 8) {
 //			lore.add(new NBTTagString(TextFormatting.DARK_RED + "Auto-Smelt"));
 		}
-		if ((t1 == 9 || t2 == 9 || t3 == 9)) {
+		if ((t1 == 9 || t2 == 9 || t3 == 9)&& Config.COMMON.allowUnbreakable.get()) {
 			lore.add(new NBTTagString(TextFormatting.GRAY + "Fortified"));
 		}
 		if (t1 == 10 || t2 == 10 || t3 == 10) {
@@ -217,7 +221,7 @@ public class PickaxeItem extends ItemPickaxe implements RandomTool {
 
 		}
 
-		if ((t1 == 9 || t2 == 9 || t3 == 9)) {
+		if ((t1 == 9 || t2 == 9 || t3 == 9)&& Config.COMMON.allowUnbreakable.get()) {
 			nbt.setBoolean("Unbreakable", true);
 		}
 

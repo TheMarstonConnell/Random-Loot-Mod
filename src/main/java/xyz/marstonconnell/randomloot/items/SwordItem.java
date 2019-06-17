@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import xyz.marstonconnell.randomloot.RandomLoot;
+import xyz.marstonconnell.randomloot.util.Config;
 import xyz.marstonconnell.randomloot.util.RLUtils;
 import xyz.marstonconnell.randomloot.util.ToolMaterialList;
 
@@ -211,7 +212,7 @@ public class SwordItem extends ItemSword implements RandomTool {
 		if (t1 == 8 || t2 == 8 || t3 == 8) {
 			lore.add(new NBTTagString(TextFormatting.YELLOW + "Glowing"));
 		}
-		if ((t1 == 9 || t2 == 9 || t3 == 9)) {
+		if ((t1 == 9 || t2 == 9 || t3 == 9) && Config.COMMON.allowUnbreakable.get()) {
 			lore.add(new NBTTagString(TextFormatting.GRAY + "Fortified"));
 		}
 		if (t1 == 10 || t2 == 10 || t3 == 10) {
@@ -281,7 +282,7 @@ public class SwordItem extends ItemSword implements RandomTool {
 
 		}
 
-		if ((t1 == 9 || t2 == 9 || t3 == 9)) {
+		if ((t1 == 9 || t2 == 9 || t3 == 9) && Config.COMMON.allowUnbreakable.get()) {
 			nbt.setBoolean("Unbreakable", true);
 		}
 

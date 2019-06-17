@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import xyz.marstonconnell.randomloot.RandomLoot;
+import xyz.marstonconnell.randomloot.util.Config;
 import xyz.marstonconnell.randomloot.util.RLUtils;
 import xyz.marstonconnell.randomloot.util.ToolMaterialList;
 
@@ -66,7 +67,7 @@ public class ShovelItem extends ItemSpade implements RandomTool {
 
 		});
 	}
-	
+
 	@Override
 	public Multimap<String, AttributeModifier> getAttributeModifiers(final EntityEquipmentSlot slot,
 			final ItemStack stack) {
@@ -81,7 +82,7 @@ public class ShovelItem extends ItemSpade implements RandomTool {
 
 		return modifiers;
 	}
-	
+
 	public ItemStack assignType(ItemStack stack) {
 		Random rand = new Random();
 		NBTTagCompound nbt;
@@ -130,7 +131,7 @@ public class ShovelItem extends ItemSpade implements RandomTool {
 
 		}
 
-		if ((t1 == 9 || t2 == 9 || t3 == 9)) {
+		if ((t1 == 9 || t2 == 9 || t3 == 9) && Config.COMMON.allowUnbreakable.get()) {
 			nbt.setBoolean("Unbreakable", true);
 		}
 
@@ -147,7 +148,7 @@ public class ShovelItem extends ItemSpade implements RandomTool {
 
 		return stack;
 	}
-	
+
 	public void setLore(ItemStack stack) {
 
 		// System.out.println(digSpeed);
@@ -177,6 +178,9 @@ public class ShovelItem extends ItemSpade implements RandomTool {
 
 		DecimalFormat f = new DecimalFormat("##.00");
 		lore.add(new NBTTagString(TextFormatting.GRAY + "Mining Speed: " + f.format(RLUtils.getRLMDigSpeed(stack))));
+		lore.add(new NBTTagString(TextFormatting.GRAY + "Attack Damage: " + f.format(RLUtils.getRLMDamage(stack))));
+		lore.add(new NBTTagString(
+				TextFormatting.GRAY + "Attack Speed: " + f.format(4 + RLUtils.getRLMSpeed(stack) - 3)));
 		lore.add(new NBTTagString(""));
 		int t1 = compound.getInt("T1");
 		int t2 = compound.getInt("T2");
@@ -210,9 +214,9 @@ public class ShovelItem extends ItemSpade implements RandomTool {
 			lore.add(new NBTTagString(TextFormatting.DARK_GREEN + "Filling"));
 		}
 		if (t1 == 8 || t2 == 8 || t3 == 8) {
-//			lore.add(new NBTTagString(TextFormatting.DARK_RED + "Auto-Smelt"));
+			// lore.add(new NBTTagString(TextFormatting.DARK_RED + "Auto-Smelt"));
 		}
-		if ((t1 == 9 || t2 == 9 || t3 == 9)) {
+		if ((t1 == 9 || t2 == 9 || t3 == 9) && Config.COMMON.allowUnbreakable.get()) {
 			lore.add(new NBTTagString(TextFormatting.GRAY + "Fortified"));
 		}
 		if (t1 == 10 || t2 == 10 || t3 == 10) {
@@ -231,9 +235,8 @@ public class ShovelItem extends ItemSpade implements RandomTool {
 		display.setTag("Lore", lore);
 		compound.setTag("display", display);
 
-
 	}
-	
+
 	private void upgrade(ItemStack stack) {
 		NBTTagCompound compound = (stack.hasTag()) ? stack.getTag() : new NBTTagCompound();
 		NBTTagList modifiers = new NBTTagList();
@@ -252,7 +255,7 @@ public class ShovelItem extends ItemSpade implements RandomTool {
 		stack.setTag(compound);
 		setLore(stack);
 	}
-	
+
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos,
 			EntityLivingBase entityLiving) {
